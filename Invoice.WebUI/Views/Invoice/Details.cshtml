@@ -1,0 +1,140 @@
+﻿@model Invoice.WebUI.ViewModel.InvoiceDetailsViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<style>
+    p {
+        margin: 0px;
+        padding: 0px;
+        font-size: 15px;
+    }
+
+    strong {
+        font-size: 17px;
+    }
+
+    hr {
+        margin: 0px;
+        padding: 0px;
+    }
+</style>
+
+
+<section class="content-header">
+    <h1>
+        <strong> Invoice</strong>
+
+        <small>Manage Your Invoice</small>
+    </h1>
+</section>
+<a href="@Url.Action("Create")" class="btn bg-maroon btn-flat margin"> Create New Invoice</a>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Invoice Details
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <strong> @Model.Company.CompanyName </strong>
+                        <p> @Model.Company.Address</p>
+                        <p> @Model.Company.Web</p>
+                    </div>
+
+                </div>
+                <br /><br />
+                <div class="row">
+                    <div class="col-lg-6">
+                        <strong>@Model.Invoice.CustomerModel.Name </strong>
+                        <p> @Model.Invoice.CustomerModel.Addess</p>
+                        <p> @Model.Invoice.CustomerModel.Web </p>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="pull-right">
+                            <strong>Invoice code : <strong> @Model.Invoice.InvoiceCode</strong></strong>
+                            <p>Invoice Date  : @Model.Invoice.InvoiceDate.ToLocalTime().ToShortDateString() </p>
+                            <p>    Due Date  :  @Model.Invoice.DueDate.ToLocalTime().ToShortDateString() </p>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-lg-12">
+                        <table class="table table-bordered table-hover ">
+                            <tr class="success">
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th> Price</th>
+                                <th> Quantity</th>
+                                <th> Amount</th>
+                            </tr>
+
+                            @foreach (var p in @Model.Invoice.Products)
+                            {
+                                <tr>
+                                    <td>@p.Product.Product </td>
+                                    <td> @p.Product.Description </td>
+                                    <td>@p.Product.UnitPrice </td>
+                                    <td> @p.Quantity</td>
+                                    <td>@p.Amount</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-lg-6">
+                        <strong>Invoice Notes</strong>
+                        <p> @Model.Invoice.Notes </p>
+                    </div>
+                    <div class="col-lg-3"></div>
+                    <div class="col-lg-3">
+                        <p>Total Amount   : @Model.Invoice.TotalAmount </p>
+                        <p>Amount  Paid   : @Model.Invoice.AmountPaid </p>
+                        <p>Balance  Due   : @Model.Invoice.BalanceDue</p>
+                        <hr />
+                        <p> Invoice Status : <strong> @Model.Invoice.Status</strong></p>
+                    </div>
+                </div>
+                <br />
+                <hr />
+                <br />
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        @*<button class="btn btn-success"><i class="fa fa-print "></i> Print</button>
+                        <button class="btn btn-success"><i class="fa fa-download"></i> Download PDF</button>
+                        <button class="btn btn-success"><i class="fa fa-download"></i> Download Word</button>*@
+                        <a href="@Url.Action("ExportTo", "Invoice", new { fileType ="PDF", id = @Model.Invoice.Id })" class="btn btn-success">
+                            <i class="fa fa-print"> Download PDF </i>
+                        </a>
+                        <a href="@Url.Action("ExportTo", "Invoice", new { fileType ="Word", id = @Model.Invoice.Id })" class="btn btn-success">
+                            <i class="fa fa-download"> Download Word </i>
+                        </a>
+                        <a href="@Url.Action("ExportTo", "Invoice", new { fileType ="Excel", id = @Model.Invoice.Id })" class="btn btn-success">
+                            <i class="fa fa-download"> Download Excel </i>
+                        </a>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="pull-right">
+                            <a href="@Url.Action("Edit", "Invoice", new {id = @Model.Invoice.Id})" class="btn btn-warning"> 
+                                <i class="glyphicon glyphicon-pencil"> Edit </i>
+                            </a>
+                            <a href="@Url.Action("Delete", "Invoice", new { id = @Model.Invoice.Id})" class="btn btn-danger">
+                                <span class="glyphicon glyphicon-trash"> Delete </span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

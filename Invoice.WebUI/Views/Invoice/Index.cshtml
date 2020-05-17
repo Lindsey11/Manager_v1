@@ -1,0 +1,107 @@
+﻿@model IEnumerable<Invoice.Model.Model.InvoiceModel>
+
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<section class="content-header">
+    <h1>
+        <strong> Invoice</strong>
+
+        <small>Manage Your Invoice</small>
+    </h1>
+</section>
+
+
+<br />
+
+<a href="@Url.Action("Create")" class="btn bg-maroon btn-flat margin"> Create New Invoice</a>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- Advanced Tables -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                All Invoices list
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <tr>
+
+                            <th>
+                                @Html.DisplayNameFor(model => model.InvoiceCode)
+                            </th>
+
+                            <th>
+                                @Html.DisplayNameFor(model => model.InvoiceDate)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.DueDate)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.TotalAmount)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.AmountPaid)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.BalanceDue)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Status)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Notes)
+                            </th>
+                            <th></th>
+                        </tr>
+
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.InvoiceCode)
+                                </td>
+                                <td>
+                                    @item.InvoiceDate.ToLocalTime().ToShortDateString()
+                                </td>
+                                <td>
+                                    @item.DueDate.ToLocalTime().ToShortDateString()
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TotalAmount)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AmountPaid)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.BalanceDue)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Status)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Notes)
+                                </td>
+                                <td>
+
+                                    @Html.ActionLink("Details", "Details", new { id = item.Id })
+                                    @*@Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                        @Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
+                                </td>
+                            </tr>
+                        }
+
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        <!--End Advanced Tables -->
+    </div>
+</div>
+<!-- /. ROW  -->

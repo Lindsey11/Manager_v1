@@ -1,0 +1,401 @@
+﻿@model Invoice.WebUI.ViewModel.InvoiceViewModel
+
+@{
+    ViewBag.Title = "Create";
+}
+
+
+<script src="~/Scripts/jquery-2.1.3.js"></script>
+
+@using (Html.BeginForm("Create", "Invoice", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Invoices</h3>
+                    </div>
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="modal fade bs-example-modal-sm" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-md">
+                                    <div class="modal-content">
+                                        <h4 class="modal-header">Select Product</h4>
+                                        <div class="modal-body">
+                                            <div class="container">
+                                                <div class="col-md-3">
+
+                                                    @Html.Label("Product", htmlAttributes: new { @class = "control-label " })
+                                                    @Html.DropDownList("Product", new SelectList(string.Empty, "Value", "Text"), "select Product", new { @class = "form-control" })
+
+                                                    <div>
+                                                        @Html.Label("Details", htmlAttributes: new { @class = "control-label " })
+                                                        @Html.Editor("Description", new { htmlAttributes = new { @class = "form-control", id = "Description", @readonly = "readonly" } })
+
+                                                        @Html.Label("Price", htmlAttributes: new { @class = "control-label " })
+                                                        @Html.Editor("Price", new { htmlAttributes = new { @class = "form-control", id = "Price", @readonly = "readonly" } })
+                                                        <br />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @Html.Label("Quantity", htmlAttributes: new { @class = "control-label " })
+                                                    @Html.Editor("Quantity", new { htmlAttributes = new { @class = "form-control", id = "Quantity" } })
+
+                                                    @Html.Label("Amount", htmlAttributes: new { @class = "control-label " })
+                                                    @Html.Editor("Amount", new { htmlAttributes = new { @class = "form-control", id = "Amount", @readonly = "readonly" } })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <a id="BtnAdd" class="btn btn-primary">
+                                                <span class="glyphicon glyphicon-plus"></span> Add
+                                            </a>
+                                            <a id="BtnClose" class="btn btn-danger" data-dismiss="modal">
+                                                <span class="glyphicon glyphicon-off"></span> Close
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-4 col-md-offset-1">
+                            @Html.LabelFor(model => model.Invoice.InvoiceCode, htmlAttributes: new { @class = "control-label" })
+                            <div>
+                                @Html.EditorFor(model => model.Invoice.InvoiceCode, new { htmlAttributes = new { @class = "form-control", @id = "InvoiceCode", @placeholder = "Invoice code" } })
+                                @Html.ValidationMessageFor(model => model.Invoice.InvoiceCode, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            @Html.LabelFor(model => model.Invoice.InvoiceDate, htmlAttributes: new { @class = "control-label " })
+                            @*<input type="text" class="mydatepicker">*@
+                            <div>
+                                @Html.EditorFor(model => model.Invoice.InvoiceDate, new { htmlAttributes = new { @class = "form-control mydatepicker", @id = "InvoiceDate", @placeholder = "Invoice Date" } })
+                                @Html.ValidationMessageFor(model => model.Invoice.InvoiceDate, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-3 ">
+                            @Html.LabelFor(model => model.Invoice.DueDate, htmlAttributes: new { @class = "control-label" })
+                            @*<input type="text" class="mydatepicker">*@
+                            <div>
+                                @Html.EditorFor(model => model.Invoice.DueDate, new { htmlAttributes = new { @class = "form-control mydatepicker", @placeholder = "Due Date", @id = "DueDate" } })
+                                @Html.ValidationMessageFor(model => model.Invoice.DueDate, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+
+                        <div class="col-md-4 col-md-offset-1">
+                            @Html.Label("Customer", htmlAttributes: new { @class = "control-label " })
+                            @Html.DropDownListFor(model => model.Invoice.CustomerId, new SelectList(string.Empty, "Value", "Text"), "select Customer", new { @class = "form-control", @required = "required", @id = "CustomerId" })
+
+                            <div>
+                                <p id="Preview"> </p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-7 ">
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+
+                        <div class="col-md-10 col-md-offset-1">
+                            @*<a href="@Url.Action("Delete", "Product")" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-sm">
+                                    <span class="glyphicon glyphicon-plus"></span> Add Product
+                                </a>*@
+
+                            <button class="btn btn-success" data-toggle="modal" data-target="#loginModal"><span class="glyphicon glyphicon-plus"></span> Add Product</button>
+                            <br /> <br />
+
+                            <div id="DataTable">
+                                @Html.Partial("_Products", Model.ProductList)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-5 col-md-offset-1">
+                            @Html.LabelFor(model => model.Invoice.Notes, htmlAttributes: new { @class = "control-label" })
+                            <div>
+                                @Html.TextAreaFor(model => model.Invoice.Notes, new { @class = "form-control", rows = "6", @placeholder = "Put your invoice notes ", @id = "Notes" })
+                                @Html.ValidationMessageFor(model => model.Invoice.Notes, "", new { @class = "text-danger" })
+                            </div>
+
+                            @Html.LabelFor(model => model.Invoice.Status, htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownListFor(model => model.Invoice.Status, ViewData["country"] as List<SelectListItem>, new { @class = "form-control", @id = "Status" })
+                            @Html.ValidationMessageFor(model => model.Invoice.Status, "", new { @class = "text-danger" })
+
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 col-md-offset-4">
+                                @Html.LabelFor(model => model.Invoice.TotalAmount, htmlAttributes: new { @class = "control-label" })
+                                <div>
+                                    @Html.EditorFor(model => model.Invoice.TotalAmount, new { htmlAttributes = new { @class = "form-control", @id = "TotalAmount", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.Invoice.TotalAmount, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-md-offset-4">
+                                @Html.LabelFor(model => model.Invoice.AmountPaid, htmlAttributes: new { @class = "control-label" })
+                                <div>
+                                    @Html.EditorFor(model => model.Invoice.AmountPaid, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount Paid", @id = "AmountPaid" } })
+                                    @Html.ValidationMessageFor(model => model.Invoice.AmountPaid, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-md-offset-4">
+                                @Html.LabelFor(model => model.Invoice.BalanceDue, htmlAttributes: new { @class = "control-label" })
+                                <div>
+                                    @Html.EditorFor(model => model.Invoice.BalanceDue, new { htmlAttributes = new { @class = "form-control", @id = "BalanceDue", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.Invoice.BalanceDue, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-10 col-md-offset-1">
+                            <input type="submit" style="width: 100%" id="btnSubmit" value="Create Invoice" class="btn btn-primary"/>
+                        </div>
+                    </div>
+                    <br/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}
+
+            <script>
+
+
+                $(function () {
+
+                    //$('#btnSubmit').on('click', function () {
+
+                    //    var invoiceCode = $('#InvoiceCode').val();
+                    //    var invoiceDate = $("#InvoiceDate").val();
+                    //    var dueDate = $("#DueDate").val();
+                    //    var status = $("#Status").val();
+                    //    var notes = $("#Notes").val();
+                    //    var totalamount = $('#TotalAmount').val();
+                    //    var balanceDue = $("#BalanceDue").val();
+                    //    var amountPaid = $("#AmountPaid").val();
+                    //    var customerId = $('#dropdownCity').val();
+                    //    alert(customerId);
+
+                    //    var model = {
+                    //        InvoiceCode: invoiceCode,
+                    //        InvoiceDate: invoiceDate,
+                    //        DueDate: dueDate,
+                    //        Status: status,
+                    //        Notes: notes,
+                    //        Totalamount: totalamount,
+                    //        BalanceDue: balanceDue,
+                    //        AmountPaid: amountPaid,
+                    //        CustomerId : customerId
+                    //    };
+
+                    //    $.ajax({
+                    //        type: "POST",
+                    //        url: "/Invoice/Create",
+                    //        datatype: "Json",
+                    //        data: {
+                    //            invoice: model
+                    //        },
+                    //        success: function (data) {
+
+                    //        },
+                    //        error: function () {
+                    //            alert('failed to add list');
+                    //        }
+                    //    });
+                    //});
+
+                    function clearValue() {
+                        $('#Price').val("");
+                        $('#Description').val("");
+                        $('#Quantity').val("");
+                        $('#Amount').val("");
+                        $('#Product').val("");
+                    };
+
+                    //total calculation
+                    function calculateSum() {
+                        var sum = 0;
+                        // iterate through each td based on class and add the values
+                        $(".price").each(function () {
+
+                            var value = $(this).text();
+                            // add only if the value is number
+                            if (!isNaN(value) && value.length != 0) {
+                                sum += parseFloat(value);
+                            }
+                        });
+
+                        $('#TotalAmount').val(sum);
+                        var a = $('#TotalAmount').val();
+                        var b = $('#AmountPaid').val();
+                        $('#BalanceDue').val(a - b);
+
+
+                    };
+                    $('.price').each(function () {
+                        calculateSum();
+                    });
+
+                    $('#AmountPaid').keyup(function () {
+                        var a = $('#TotalAmount').val();
+                        var b = $('#AmountPaid').val();
+                        $('#BalanceDue').val(a - b);
+                    });
+
+                    $('#BtnAdd').on('click', function () {
+                        //getting product id and name from dropdown
+                        var productId = $('#Product').val();
+                        var productName = $("#Product option:selected").text();
+                        var description = $("#Description").val();
+                        var price = $("#Price").val();
+                        var quantity = $("#Quantity").val();
+                        var amount = $("#Amount").val();
+
+                        var model = {
+                            ProductId: productId,
+                            ProductName: productName,
+                            Description: description,
+                            Price: price,
+                            Quantity: quantity,
+                            Amount: amount
+                        };
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/Invoice/Add",
+                            datatype: "Json",
+                            data: model,
+                            traditional: true,
+                            success: function (data) {
+                                $("#DataTable").html(data);
+                                calculateSum();
+                                clearValue();
+
+                            },
+                            error: function () {
+                                alert('failed to add list');
+                            }
+                        });
+                    });
+
+
+
+                    $('input[name="Quantity"]').keyup(function () {
+                        var a = $('input[name="Price"]').val();
+                        var b = $(this).val();
+                        $('input[name="Amount"]').val(a * b);
+                    });
+
+                    // Gets Products on Dropdown
+                    $.ajax({
+                        type: "GET",
+                        url: "/Invoice/GetProduct",
+                        datatype: "Json",
+                        success: function (data) {
+                            $.each(data, function (index, value) {
+                                $('#Product').append('<option value="' + value.Id + '">' + value.Product + '</option>');
+                            });
+                        }
+                    });
+
+                    //When Product drop down changes
+                    $('#Product').change(function () {
+
+                        $('#Price').empty();
+                        $('#Description').empty();
+                        $('#Quantity').val("");
+                        $('#Amount').val("");
+                        $.ajax({
+                            type: "POST",
+                            url: "/Invoice/GetProductById/",
+                            datatype: "Json",
+                            data: { id: $('#Product').val() },
+                            success: function (data) {
+                                $.each(data, function (index, value) {
+                                    $("#Price").val(value.UnitPrice);
+                                    $("#Description").val(value.Description);
+                                    //$("#productId").text(value.Id);
+
+                                });
+
+                            }
+                        });
+                    });
+
+                    //Get alll customers to Dropdown customers
+                    $.ajax({
+                        type: "GET",
+                        url: "/Invoice/GetCustomer",
+                        datatype: "Json",
+                        success: function (data) {
+                            $.each(data, function (index, value) {
+                                $('#CustomerId').append('<option value="' + value.Id + '">' + value.Name + '</option>');
+                            });
+                        }
+                    });
+
+                    //WHen Dropdown customer changes
+                    $('#CustomerId').change(function () {
+
+                        $('#name').empty();
+                        $('#Preview').empty();
+                        $.ajax({
+                            type: "POST",
+                            url: "/Invoice/GetCustomerById/",
+                            datatype: "Json",
+                            data: { id: $('#CustomerId').val() },
+                            success: function (data) {
+                                $.each(data, function (index, value) {
+                                    $("#name").val(value.Name);
+                                    $("#Preview").text("Addresss : " + value.Addess);
+                                });
+
+                            }
+                        });
+                    });
+
+
+                    //calendar
+                    $(".mydatepicker").datepicker();
+
+                    $(document).on('click', '.panel-heading span.clickable', function (e) {
+                        var $this = $(this);
+                        if (!$this.hasClass('panel-collapsed')) {
+                            $this.parents('.panel').find('.panel-body').slideUp();
+                            $this.addClass('panel-collapsed');
+                            $this.find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+                        } else {
+                            $this.parents('.panel').find('.panel-body').slideDown();
+                            $this.removeClass('panel-collapsed');
+                            $this.find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+                        }
+                    });
+                });
+
+
+            </script>
+

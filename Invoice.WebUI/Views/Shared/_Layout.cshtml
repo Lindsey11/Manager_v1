@@ -1,0 +1,211 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Invoice System</title>
+
+    <link href="~/Content/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+
+    <link href="~/content/plugins/datepicker/datepicker3.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="/Content/assets/css/AdminLTE.min.css">
+    <link href="~/Content/plugins/datatables/dataTables.bootstrap.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Content/assets/css/skins/skin-purple.min.css">
+
+    <script src="/Content/plugins/jQuery/jquery-2.2.3.min.js"></script>
+
+</head>
+
+<body class="hold-transition skin-purple sidebar-mini">
+        <div class="wrapper">
+            <!-- Main Header -->
+            <header class="main-header">
+                <!-- Logo -->
+                <a href="@Url.Action("Index")" class="logo">
+                    <!-- mini logo for sidebar mini 50x50 pixels -->
+                    <span class="logo-mini"><b>A</b>LT</span>
+                    <!-- logo for regular state and mobile devices -->
+                    <span class="logo-lg"><b>Grind</b>Control</span>
+                </a>
+                <!-- Header Navbar -->
+                <nav class="navbar navbar-static-top" role="navigation">
+                    <!-- Sidebar toggle button-->
+                    <!-- Navbar Right Menu -->
+                    <div class="navbar-custom-menu">
+                        <ul class="nav navbar-nav">
+                            <!-- Messages: style can be found in dropdown.less-->
+                            <!-- User Account Menu -->
+                            @*<li class="dropdown user user-menu">
+                                <!-- Menu Toggle Button -->
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <!-- The user image in the navbar-->
+                                    <img src="/Content/assets/img/user2-160x160.jpg" class="user-image" alt="User Image">
+                                    <!-- hidden-xs hides the username on small devices so only the image appears. -->
+                                    <span class="hidden-xs">Alexander Pierce</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <!-- The user image in the menu -->
+                                    <li class="user-header">
+                                        <img src="/Content/assets/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                                        <p>
+                                            Alexander Pierce - Web Developer
+                                            <small>Member since Nov. 2012</small>
+                                        </p>
+                                    </li>
+
+                                    <li class="user-footer">
+                                        <div class="pull-left">
+                                            <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                        </div>
+                                        <div class="pull-right">
+                                            <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>*@
+
+                            <li><a href="@Url.Action("signout", "Home")"><i class="fa fa-sign-out"></i> <span>Logout</span></a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </header> 
+            @Html.Partial("_Navigation")
+            <div class="content-wrapper">
+             
+                <section class="content">
+                    @RenderBody()
+                </section>
+            </div>
+           
+            <footer class="main-footer">
+                
+                <div class="pull-right hidden-xs">
+                    Made with <i class="fa fa-heart pulse"></i>
+                </div>
+                <!-- Default to the left -->
+                <strong>Copyright &copy; 2020 <a href="#">Lindsey Drew</a>.</strong> All rights reserved.
+            </footer>
+            <!-- Control Sidebar -->
+        </div>
+
+
+        <!-- Bootstrap 3.3.6 -->
+
+
+
+        <script src="~/Content/bootstrap/js/bootstrap.min.js"></script>
+        <script src="~/Content/plugins/datatables/jquery.dataTables.min.js"></script>
+        <script src="~/Content/plugins/datatables/dataTables.bootstrap.min.js"></script>
+        <script src="~/Scripts/jquery.validate.min.js"></script>
+        <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+        <script src="~/content/plugins/datepicker/bootstrap-datepicker.js"></script>
+
+        <!-- AdminLTE App -->
+        <script src="/Content/assets/js/app.min.js"></script>
+        <script type="text/javascript">
+        $(function() {
+            
+        });
+        </script>
+
+        @RenderSection("scripts", required: false)
+
+    </body>
+@*<div id="wrapper">
+    <nav class="navbar navbar-default top-navbar" role="navigation">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="@Url.Action("Index", "Home")">Invoice</a>
+        </div>
+
+        <ul class="nav navbar-top-links navbar-right">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false"> Hello, @User.Identity.Name
+                        <i class="fa fa-user fa-fw"> </i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li>
+                            <a href="@Url.Action("Index", "User")"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "Company")"><i class=" fa fa-gear fa-fw"></i>Company Settings</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="@Url.Action("Home", "Home")"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                </li>
+            }
+        </ul>
+    </nav>
+    <nav class="navbar-default navbar-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="main-menu">
+
+                <li>
+                    <a href="@Url.Action("Index", "Home")"><i class="fa fa-dashboard"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Index", "Customer")"><i class="fa fa-desktop"></i> Customer</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Index", "Product")"><i class="fa fa-bar-chart-o"></i> Product</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Index", "Invoice")"><i class="fa fa-qrcode"></i> Invoice</a>
+                </li>
+
+                <li>
+                    <a href="@Url.Action("Index", "Company")"><i class="fa fa-table"></i> Company</a>
+                </li>
+
+                <li>
+                    <a href="@Url.Action("Index", "User")"><i class="fa fa-user"></i> User</a>
+                </li>
+            </ul>
+
+        </div>
+
+    </nav>
+
+    <div id="page-wrapper">
+        <div id="page-inner">
+
+            <div class="row">
+                <div class="col-md-12">
+                    @RenderBody()
+                </div>
+            </div>
+            <footer>
+                <p>&copy; @DateTime.Now.Year - Invoice System.</p>
+            </footer>
+        </div>
+    </div>
+</div>*@
+
+
+
+@*<script src="~/Content/Dream/assets/js/jquery-1.10.2.js"></script>
+    <script src="~/Content/Dream/assets/js/bootstrap.min.js"></script>
+    <script src="~/Content/Dream/assets/js/jquery.metisMenu.js"></script>
+    <script src="~/Content/Dream/assets/js/morris/raphael-2.1.0.min.js"></script>
+    <script src="~/Content/Dream/assets/js/morris/morris.js"></script>
+    <script src="~/Content/Dream/assets/js/custom-scripts.js"></script>
+
+    <script src="~/Scripts/jquery-2.1.3.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Content/datepicker/datepicker/js/bootstrap-datepicker.js"></script>*@
+
+</html>

@@ -1,0 +1,110 @@
+﻿@model IEnumerable<Invoice.WebUI.ViewModel.ProductList>
+
+<table class="table table-bordered table-hover ">
+    <tr class="success">
+        <th>
+            Id
+        </th>
+        <th>
+            Name
+        </th>
+        <th>
+            Description
+        </th>
+        <th>
+            Price
+        </th>
+        <th>
+            Quantity
+        </th>
+        <th>
+            Amount
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var p in Model)
+    {
+        <tr>
+            <td>
+                @Html.CheckBox(p.ProductId.ToString(), false, new { @class = "ckb", Id = p.ProductId, @*@type = "hidden"*@ })
+                @p.ProductId
+                <input type="hidden" name="ProductId" class="ProductId" value="@p.ProductId"/>
+
+            </td>
+            <td>
+                @p.ProductName
+            </td>
+            <td>
+                @p.Description
+            </td>
+            <td>
+                @p.Price
+            </td>
+            <td>
+                @p.Quantity
+            </td>
+            <td class="price">
+                @p.Amount
+            </td>
+            <td>
+                <input type="hidden" name="ProductId" class="ProductId" value="@p.ProductId"/>
+
+                <a class="btn btn-danger btnDelete" id="btnDelete">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </a>
+                @*@Html.ActionLink("Edit", "Edit", new { id = item.Id }) |*@
+                @*@Html.ActionLink("Delete", "Delete", new { id = item.Id })*@
+            </td>
+        </tr>
+    }
+
+</table>
+
+<h1 id="result"></h1>
+
+<script type="text/javascript">
+    $(function () {
+        
+        function calculateSum() {
+            var sum = 0;
+            // iterate through each td based on class and add the values
+            $(".price").each(function () {
+
+                var value = $(this).text();
+                // add only if the value is number
+                if (!isNaN(value) && value.length != 0) {
+                    sum += parseFloat(value);
+                }
+            });
+
+            $('#TotalAmount').val(sum.toFixed(2));
+            var a = $('#TotalAmount').val();
+            var b = $('#AmountPaid').val();
+            $('#BalanceDue').val(a - b);
+        };
+
+
+
+        $('.btnDelete').click(function () {
+            var deleteId = $(this).parent().find(".ProductId").val();
+            alert(deleteId);
+
+            $.ajax({
+                type: "POST",
+                url: "/Invoice/ProductDelete",
+                data: { id: deleteId },
+                traditional: true,
+                success: function (data) {
+                    $("#DataTable").html(data);
+                    calculateSum();
+                },
+                error: function () {
+                    alert('failed!');
+                }
+            });
+        });
+    });
+
+   
+</script>

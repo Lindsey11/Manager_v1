@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<script src="../../Scripts/jquery-2.1.3.js"></script>
+
+
+<head>
+    <title></title>
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            $('.price').each(function() {
+                calculateSum();
+            });
+        });
+
+        function calculateSum() {
+
+            var sum = 0;
+            // iterate through each td based on class and add the values
+            $(".price").each(function () {
+
+                var value = $(this).text();
+                // add only if the value is number
+                if (!isNaN(value) && value.length != 0) {
+                    sum += parseFloat(value);
+                }
+            });
+            
+            $('#result').text(sum);    
+        };
+    </script> 
+</head>
+<body>
+<table class="table table-bordered">
+    <tr>
+        <th>Item</th>
+        <th>Price</th>
+    </tr>
+    <tr>
+        <td>Banana</td>
+        <td class="price">50</td>
+    </tr>
+    <tr>
+        <td>Apple</td>
+        <td class="price">100</td>
+    </tr>
+</table>
+
+<div id="result"></div>
+</body>
+</html>
