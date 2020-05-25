@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Web;
@@ -276,7 +277,7 @@ namespace Invoice.WebUI.Controllers
                                                 out fileNameExtension, out streams, out warnings);
             //Response.AddHeader("content-disposition", "attachment; filename=Urls." + fileNameExtension);
             Response.AddHeader("content-disposition", "attachment; filename=invoice-"+id+"." + fileNameExtension);
-
+         
             return File(renderedBytes, fileNameExtension);
         }
 
@@ -289,13 +290,110 @@ namespace Invoice.WebUI.Controllers
             base.Dispose(disposing);
         }
 
-        public ActionResult Test()
+        public ActionResult SendAllInvoices()
         {
-            var test = ExportTo("pdf", 1);
-            dynamic email = new Email("test");
-            email.To = "webninja@example.com";
-            email.Attach(test);
+            //Get all users 
+            var AllUsers = db.User.ToList();
+            var email = new EmailViewModel();
+            
+            foreach (var item in AllUsers)
+            {
+                var InvoiceId = db.Invoices.Where(x => x.UserId == item.Id).FirstOrDefault().Id;
+                //Get user invoice
+                var invoiceToSend = ExportTo("pdf", InvoiceId);
+                var attachmentStream = new MemoryStream((invoiceToSend as FileContentResult).FileContents);
+
+                //Send Email
+                email.To = item.Email;
+                email.Attach(new Attachment(attachmentStream, invoiceToSend.FileDownloadName, invoiceToSend.ContentType));
+
+            }
+            email.Send();
             return View();
+        }
+
+        public ActionResult SendSingleInvoices()
+        {
+            var email = new EmailViewModel
+            {
+                To = "drewlindsey017@gmail.com",
+                Message = "0000000"
+            };
+          
+            //Get user invoice
+            var invoiceToSend = Stream("pdf",2);
+            var attachmentStream = new MemoryStream(invoiceToSend);
+            var contentType = new System.Net.Mime.ContentType(System.Net.Mime.MediaTypeNames.Application.Pdf);
+            email.Attach(new Attachment(attachmentStream, "Lindsey Drew Invoice" , contentType.ToString()));
+            email.Send();
+
+            return Json("test", JsonRequestBehavior.AllowGet);
+        }
+
+        public byte[] Stream(string fileType, int id)
+        {
+
+            LocalReport localReport = new LocalReport();
+            localReport.ReportPath = Server.MapPath("~/Report/Invoice.rdlc");
+
+            var currentInvoice = db.Invoices.Include(x => x.CustomerModel)
+                  .Include(x => x.Products)
+                  .Include("Products.Product")
+                  .FirstOrDefault(x => x.Id == id);
+
+            var company = db.Company.ToList();
+
+            var products = currentInvoice.Products.ToList();
+            var customer = new List<CustomerModel>
+                {
+                    currentInvoice.CustomerModel
+                };
+
+            var invoice = new List<InvoiceModel>
+                {
+                    new InvoiceModel
+                    {
+                        InvoiceCode = currentInvoice.InvoiceCode,
+                        InvoiceDate = currentInvoice.InvoiceDate,
+                        DueDate = currentInvoice.DueDate,
+                        Notes = currentInvoice.Notes,
+                        Status = currentInvoice.Status,
+                        TotalAmount = currentInvoice.TotalAmount,
+                        BalanceDue = currentInvoice.BalanceDue,
+                        AmountPaid = currentInvoice.AmountPaid
+                    }
+                };
+
+            var productsInvoice = products.Select(x => new
+            {
+                Product = x.Product.Product,
+                Description = x.Product.Description,
+                UnitPrice = x.Product.UnitPrice,
+                Amount = x.Amount,
+                Quantity = x.Quantity
+            });
+
+
+            var rd1 = new ReportDataSource("Company", company);
+            var rd2 = new ReportDataSource("Products", productsInvoice);
+            var rd3 = new ReportDataSource("Customer", customer);
+            var rd4 = new ReportDataSource("Invoice", invoice);
+            localReport.DataSources.Add(rd1);
+            localReport.DataSources.Add(rd2);
+            localReport.DataSources.Add(rd3);
+            localReport.DataSources.Add(rd4);
+
+            string reportType = fileType;
+            string mimeType;
+            string encoding;
+            string fileNameExtension = (fileType == "Excel") ? "xlsx" : (fileType == "Word" ? "doc" : "pdf");
+            Warning[] warnings;
+            string[] streams;
+            byte[] renderedBytes;
+
+            renderedBytes = localReport.Render(reportType, "", out mimeType, out encoding,
+                                                out fileNameExtension, out streams, out warnings);
+            return renderedBytes;
         }
     }
 }
