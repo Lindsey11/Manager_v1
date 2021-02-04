@@ -1262,7 +1262,7 @@
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>Bankind Details </Value>
+                <Value>Banking Details </Value>
                 <Style>
                   <FontFamily>Segoe UI</FontFamily>
                   <FontWeight>Bold</FontWeight>

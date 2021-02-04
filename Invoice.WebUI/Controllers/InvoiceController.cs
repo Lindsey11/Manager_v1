@@ -293,23 +293,25 @@ namespace Invoice.WebUI.Controllers
         public ActionResult SendAllInvoices()
         {
             //Get all users 
-            var AllUsers = db.User.ToList();
-            var email = new EmailViewModel();
+            var AllUsers = db.Customer.ToList();
             
+            int count = 0;
             foreach (var item in AllUsers)
             {
-                var InvoiceId = db.Invoices.Where(x => x.UserId == item.Id).FirstOrDefault().Id;
-                //Get user invoice
-                var invoiceToSend = ExportTo("pdf", InvoiceId);
-                var attachmentStream = new MemoryStream((invoiceToSend as FileContentResult).FileContents);
-
-                //Send Email
+                var email = new EmailViewModel();
+                var InvoiceId = db.Invoices.Where(x => x.CustomerId == item.Id).FirstOrDefault().Id;
+                var invoiceToSend = Stream("pdf", InvoiceId);
+                var attachmentStream = new MemoryStream(invoiceToSend);
+                var contentType = new System.Net.Mime.ContentType(System.Net.Mime.MediaTypeNames.Application.Pdf);
                 email.To = item.Email;
-                email.Attach(new Attachment(attachmentStream, invoiceToSend.FileDownloadName, invoiceToSend.ContentType));
-
+                email.Message = "June Invoice";
+                email.Attach(new Attachment(attachmentStream, "The Grind Invoice", contentType.ToString()));
+                email.Send();
+               
+                count++;
             }
-            email.Send();
-            return View();
+            return Json(count.ToString(), JsonRequestBehavior.AllowGet);
+            // return View();
         }
 
         public ActionResult SendSingleInvoices()
@@ -317,7 +319,7 @@ namespace Invoice.WebUI.Controllers
             var email = new EmailViewModel
             {
                 To = "drewlindsey017@gmail.com",
-                Message = "0000000"
+                Message = "June Invoice"
             };
           
             //Get user invoice

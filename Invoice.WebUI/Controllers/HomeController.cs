@@ -86,7 +86,7 @@ namespace Invoice.WebUI.Controllers
         public ActionResult SignOut()
         {
             FormsAuthentication.SignOut();
-            return RedirectToAction("Home", "Home");
+            return RedirectToAction("Login");
         }
 
         public ActionResult Contact()
